@@ -17,7 +17,7 @@ const ReadingProgress: React.FC = () => {
   }, [])
 
   return (
-    <div className="fixed bottom-0 left-0 w-full h-1 bg-gray-200">
+    <div className="fixed bottom-0 left-0 w-full h-1 bg-gray-200 dark:bg-gray-800">
       <div 
         className="h-full bg-accent.green transition-all duration-200"
         style={{ width: `${progress}%` }}

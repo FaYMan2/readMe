@@ -1,43 +1,91 @@
 "use client";
 
-import { useState } from 'react'
-import UnderstatedButton from '../../components/UnderstatedButton'
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Loader2 } from "lucide-react";
 
 export default function SignupPage() {
-  const [isFocused, setIsFocused] = useState(false)
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // Basic validation
+    if (!email || !password) {
+      setError("Both email and password are required.");
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    // Reset errors and start loading
+    setError("");
+    setIsLoading(true);
+
+    // Simulate an async signup (replace with your API call)
+    setTimeout(() => {
+      console.log("Signup submitted", { email, password });
+      setIsLoading(false);
+    }, 1500);
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="w-full max-w-md p-8 bg-white shadow rounded">
-        <h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2>
-        <form className="space-y-6">
-          <div className="relative">
-            <input
+    <div className="min-h-screen flex items-center justify-center bg-black">
+      {/* Fade-in effect on the card */}
+      <div className="w-full max-w-md p-8 bg-[#070707] border-[1px] border-opacity-20 border-white shadow rounded animate-in fade-in-0 text-slate-200">
+        <h2 className="text-2xl font-bold text-center mb-6 ">
+          Sign Up
+        </h2>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid gap-1">
+            <Label htmlFor="signup-email" className="text-white">
+              Email
+            </Label>
+            <Input
+              id="signup-email"
               type="email"
-              placeholder="Email"
-              className="w-full border-b border-gray-300 focus:outline-none py-2"
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
+              placeholder="abc@gmail.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="bg-black border-[2px] border-white border-opacity-100 text-white"
             />
-            {isFocused && (
-              <span className="absolute right-0 top-2 animate-pulse text-xl">✒️</span>
-            )}
           </div>
-          <div className="relative">
-            <input
+          <div className="grid gap-1">
+            <Label htmlFor="signup-password" className="text-white">
+              Password
+            </Label>
+            <Input
+              id="signup-password"
               type="password"
-              placeholder="Password"
-              className="w-full border-b border-gray-300 focus:outline-none py-2"
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="bg-black border-[2px] border-white border-opacity-100 text-white"
             />
-            {isFocused && (
-              <span className="absolute right-0 top-2 animate-pulse text-xl">✒️</span>
-            )}
           </div>
-          <UnderstatedButton label="Continue" />
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+          <Button type="submit" disabled={isLoading} className="w-full">
+            {/* Spinner shown during loading */}
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Continue
+          </Button>
         </form>
+
+        {/* Footer links */}
+        <p className="text-center mt-4 text-sm text-gray-400">
+          Already have an account?{" "}
+          <a href="/login" className="text-slate-200 underline">
+            Login
+          </a>
+        </p>
       </div>
     </div>
-  )
+  );
 }

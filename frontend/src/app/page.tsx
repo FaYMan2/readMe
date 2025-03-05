@@ -1,5 +1,5 @@
 import ArticleCard from '../components/ArticleCard'
-
+import HomeStyle from '@/components/HomeComp';
 const dummyPosts = [
   {
     id: 1,
@@ -23,14 +23,10 @@ export default function HomePage() {
   return (
     <main className="px-4 py-8 max-w-3xl mx-auto">
       {/* Hero Section */}
-      <section className="text-center mb-12">
-        <h1 className="text-5xl font-bold font-header">Stories Worth Sharing</h1>
-        <p className="mt-4 text-lg text-accent.gray">
-          Thoughtful perspectives from our community
-        </p>
-      </section>
-
-      {/* Posts Grid (Single column layout) */}
+      <div className='py-8 mb-6 flex allign-center justify-center'>
+        <HomeStyle/>
+      </div>
+      
       <section className="space-y-8">
         {dummyPosts.map(post => (
           <ArticleCard key={post.id} post={post} />

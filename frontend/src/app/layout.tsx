@@ -3,15 +3,12 @@ import { ReactNode } from 'react'
 import FloatingHeader from '../components/FloatingHeader'
 import ReadingProgress from '../components/ReadingProgress'
 
-export const metadata = {
-  title: 'MyBlog',
-  description: 'A Medium-inspired personal blog platform'
-}
+
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" className="dark">
+      <body className='bg-black text-white'>
         <FloatingHeader />
         {children}
         <ReadingProgress />
@@ -19,3 +16,4 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     </html>
   )
 }
+  
