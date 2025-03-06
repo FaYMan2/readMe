@@ -1,7 +1,9 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+import logger from './loggint';
 
-const SECRET_KEY = process.env.JWT_SECRET || "your_secret_key"; 
+const SECRET_KEY = process.env.JWT_SECRET || ""; 
 
 export const hashPassword = async (password: string): Promise<string> => {
     const saltRounds = 10;
@@ -13,5 +15,5 @@ export const comparePassword = async (password: string, hashedPassword: string):
 };
 
 export const generateToken = (userId: string): string => {
-    return jwt.sign({ userId }, SECRET_KEY, { expiresIn: "1h" });
+    return jwt.sign({ id : userId }, SECRET_KEY, { expiresIn: "1h" });
 };
