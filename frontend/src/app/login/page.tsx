@@ -4,36 +4,67 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react"; // Provides a nice spinner icon
+import { Loader2 } from "lucide-react";
+import Cookies from "js-cookie";
+import { SERVER_ADDR } from "../utils/atom";
+import { isLoggedInAtom,userIdAtom,usernameAtom } from "../utils/atom";
+import { useAtom } from "jotai";
+import axios,{AxiosError} from "axios";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const [isLoggedIn,setIsLoggedIn] = useAtom(isLoggedInAtom);
+  const [,setUserId] = useAtom(userIdAtom);
+  const [,setUsername] = useAtom(usernameAtom);
+  if(isLoggedIn){
+    window.location.href = "/";
+  }
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    console.log("handle submit called");
     e.preventDefault();
-    // Basic validation
+    setError("");
+  
     if (!email || !password) {
       setError("Both email and password are required.");
       return;
     }
+  
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError("Please enter a valid email address.");
       return;
     }
-
-    // Reset errors and start loading
-    setError("");
+  
     setIsLoading(true);
-
-    // Simulate an async login (replace with your API call)
-    setTimeout(() => {
-      console.log("Login submitted", { email, password });
+  
+    try {
+      const { data } = await axios.post(`${SERVER_ADDR}/api/auth/login`, { email, password });
+  
+      console.log(data);
+      
+      console.log("Setting cookies:", {
+        token: data.token,
+        userId: data.userId,
+        username: data.email
+      });
+  
+      Cookies.set("token", data.token, { expires: 1, secure: true, sameSite: "Strict" });
+      Cookies.set("userId", data.userId, { expires: 1, secure: true, sameSite: "Strict" });
+      Cookies.set("username", data.email, { expires: 1, secure: true, sameSite: "Strict" });
+      setUserId(data.userId);
+      setUsername(data.email);
+      setIsLoggedIn(true);
+      window.location.href = "/";
+  
+      alert("Login successful!");
+    } catch (error: unknown) {
+          setError(((error as AxiosError).response?.data as { error: string })?.error || "Signup failed");
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -69,13 +100,11 @@ export default function LoginPage() {
           </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <Button type="submit" disabled={isLoading} className="w-full">
-            {/* Spinner shown during loading */}
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Continue
           </Button>
         </form>
 
-        {/* Footer links */}
         <p className="text-center mt-4 text-sm text-gray-400">
           Don&apos;t have an account?{" "}
           <a href="/signup" className="underline text-slate-200">

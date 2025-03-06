@@ -1,39 +1,47 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
+import { SERVER_ADDR } from "../utils/atom";
+import axios, { AxiosError } from "axios";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Basic validation
+    setError("");
+  
     if (!email || !password) {
       setError("Both email and password are required.");
       return;
     }
+  
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError("Please enter a valid email address.");
       return;
     }
-
-    // Reset errors and start loading
-    setError("");
+  
     setIsLoading(true);
-
-    // Simulate an async signup (replace with your API call)
-    setTimeout(() => {
-      console.log("Signup submitted", { email, password });
+  
+    try {
+      await axios.post(`${SERVER_ADDR}/api/auth/signup`, { email, password });
+      alert("Signup successful! Redirecting to login...");
+      router.push("/login");
+    } catch (error: unknown) {
+      setError(((error as AxiosError).response?.data as { error: string })?.error || "Signup failed");
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -72,13 +80,11 @@ export default function SignupPage() {
           </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <Button type="submit" disabled={isLoading} className="w-full">
-            {/* Spinner shown during loading */}
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Continue
           </Button>
         </form>
 
-        {/* Footer links */}
         <p className="text-center mt-4 text-sm text-gray-400">
           Already have an account?{" "}
           <a href="/login" className="text-slate-200 underline">

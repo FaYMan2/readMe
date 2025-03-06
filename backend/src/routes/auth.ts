@@ -61,7 +61,7 @@ router.post("/login", async (req : Request,res : Response) => {
 
         const token = generateToken(user.id);
         logger.success(`User signed in successfully: ${email}`);
-        res.status(200).json({"message" : "loggin successfull",token});
+        res.status(200).json({"message" : "loggin successfull",token,userId : user.id,email : user.email});
     }
     catch(error : any){
         logger.error(`Signin failed: ${error}`);

@@ -43,7 +43,7 @@ router.post("/create", authMiddleware, async (req: Request, res: Response) => {
  * @route   GET /post/random
  * @desc    Get 5 random posts (Authenticated Users Only)
  */
-router.get("/random", authMiddleware, async (req: Request, res: Response) => {
+router.get("/random", async (req: Request, res: Response) => {
     try {
         const count = await prisma.post.count();
         const randomPosts = await prisma.post.findMany({
