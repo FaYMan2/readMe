@@ -8,6 +8,8 @@ import logger from "../utils/loggint";
 
 const router = express.Router();
 
+
+
 /**
  * @route   POST /post/create
  * @desc    Create a new post (Authenticated Users Only)
@@ -52,15 +54,17 @@ router.get("/random", async (req: Request, res: Response) => {
 
             select: {
                 title: true,
-                content: true, 
+                content: true,
+                id: true, 
             },
             orderBy: { createdAt: "desc" },
         });
 
         const formattedPosts = randomPosts.map(post => ({
+            id : post.id,
             title: post.title,
             wordCount: post.content.split(/\s+/).filter(Boolean).length, 
-        }));
+        }));    
 
         res.status(200).json(formattedPosts);
     } catch (error) {
@@ -78,11 +82,11 @@ router.get("/posts", authMiddleware, async (req: Request, res: Response) => {
         const { author } = req.query; 
         const posts = await prisma.post.findMany({
             where: author ? { authorId: author as string } : undefined,
-            orderBy: { createdAt: "desc" },
+            orderBy: { createdAt: "desc" }, 
         });
 
         if (posts.length === 0) {
-            res.status(404).json({ message: "No posts found" });
+            res.status(201).json({ message: "No posts found" });
             return;
         }
 
@@ -94,4 +98,25 @@ router.get("/posts", authMiddleware, async (req: Request, res: Response) => {
 });
 
 
+/** 
+ * @route GET /postId
+ * @desc Gets the post data by the post id
+*/
+
+router.get("/:id",async (req : Request,res : Response) => {
+    const id  = req.params.id;
+    const postData = await prisma.post.findFirst({
+        where : {
+            id : id
+        }
+    })
+
+    if(!postData){
+        res.status(201).json({message : "no post found"})
+        return;
+    }
+
+    res.status(200).json(postData);
+    return;
+})
 export default router;

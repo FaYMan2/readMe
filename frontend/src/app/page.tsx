@@ -4,13 +4,13 @@ import { SERVER_ADDR } from './utils/atom';
 
 async function getPosts() {
   const res = await fetch(`${SERVER_ADDR}/api/posts/random`, {
-    cache: 'no-store', // Disabling chaching to ensure new data every time just like SSR
+    cache: 'no-store',
   });
 
   if (!res.ok) {
     throw new Error('Failed to fetch posts');
   }
-
+  console.log(res.json)
   return res.json();
 }
 
@@ -23,8 +23,8 @@ export default async function HomePage() {
         <HomeStyle />
       </div>
 
-      <section className="space-y-8">
-        {posts.map((post: { title: string; wordCount: number }, index: number) => (
+      <section>
+        {posts.map((post: { title: string; wordCount: number;id : string }, index: number) => (
           <ArticleCard key={index} post={post} />
         ))}
       </section>

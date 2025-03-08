@@ -10,18 +10,17 @@ import { SERVER_ADDR } from "../utils/atom";
 import { isLoggedInAtom,userIdAtom,usernameAtom } from "../utils/atom";
 import { useAtom } from "jotai";
 import axios,{AxiosError} from "axios";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoggedIn,setIsLoggedIn] = useAtom(isLoggedInAtom);
+  const [,setIsLoggedIn] = useAtom(isLoggedInAtom);
   const [,setUserId] = useAtom(userIdAtom);
   const [,setUsername] = useAtom(usernameAtom);
-  if(isLoggedIn){
-    window.location.href = "/";
-  }
+  const router = useRouter();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     console.log("handle submit called");
     e.preventDefault();
@@ -57,7 +56,7 @@ export default function LoginPage() {
       setUserId(data.userId);
       setUsername(data.email);
       setIsLoggedIn(true);
-      window.location.href = "/";
+      router.push('/dashboard');
   
       alert("Login successful!");
     } catch (error: unknown) {

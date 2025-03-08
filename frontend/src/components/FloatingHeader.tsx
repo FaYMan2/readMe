@@ -6,20 +6,20 @@ import { MoreVertical, LogOut } from "lucide-react";
 import Cookies from "js-cookie";
 import { useAtom } from "jotai";
 import { isLoggedInAtom, usernameAtom } from "../app/utils/atom";
-
+import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-
+import { logoutUser } from "../app/utils/atom";
 import { Button } from "@/components/ui/button";
 
 const FloatingHeader: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useAtom(isLoggedInAtom);
   const [, setUsername] = useAtom(usernameAtom);
-
+  const router = useRouter();
   useEffect(() => {
     const token = Cookies.get("token");
     const storedUsername = Cookies.get("username");
@@ -28,7 +28,11 @@ const FloatingHeader: React.FC = () => {
       setIsLoggedIn(true);
       setUsername(storedUsername);  
     }
-  }, [setIsLoggedIn, setUsername]);
+    else{
+      logoutUser();
+      router.push("/login");
+    }
+  }, [setIsLoggedIn, setUsername,router]);
 
   const handleSignOut = () => {
     Cookies.remove("token");
@@ -37,7 +41,7 @@ const FloatingHeader: React.FC = () => {
     setIsLoggedIn(false);
     setUsername("");
 
-    window.location.href = "/";
+    router.push("/login");
   };
   
   const storedUsername = Cookies.get("username");
@@ -54,7 +58,6 @@ const FloatingHeader: React.FC = () => {
 
         <nav className="flex items-center space-x-4">
           {!isLoggedIn ? (
-            // Show Login/Signup links when not logged in
             <div className="hidden md:flex space-x-4">
               <Link href="/login">
                 <span className="px-3 py-2 rounded hover:bg-opacity-30 dark:hover:opacity-70 transition cursor-pointer">
@@ -68,8 +71,13 @@ const FloatingHeader: React.FC = () => {
               </Link>
             </div>
           ) : (
-            // Show user initials + sign-out button when logged in
             <div className="hidden md:flex items-center space-x-4">
+              <span className="text-slate-300 hover:text-slate-400 cursor-pointer">
+                  <Link
+                    href={'/dashboard'}>
+                    Dashboard
+                  </Link> 
+              </span>
               <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 dark:bg-gray-700 text-black dark:text-white text-lg font-bold">
                 {initials}
               </div>
@@ -79,7 +87,6 @@ const FloatingHeader: React.FC = () => {
             </div>
           )}
 
-          {/* Mobile Dropdown Menu */}
           <div className="md:hidden">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
