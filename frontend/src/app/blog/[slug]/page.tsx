@@ -1,12 +1,29 @@
-import BlogPost from "@/components/BlogPost"
-import TTScomponent from "@/components/TtsComp"
+import BlogPost from "@/components/BlogPost";
+import TTScomponent from "@/components/TtsComp";
+import axios from "axios";
+import { SERVER_ADDR } from "@/app/utils/atom";
+import { BlogData } from "@/app/utils/types";
+import Citations from "@/components/Citations"
 
-export default function Page({ params }: { params: { slug: string } }) {
+async function fetchBlogData(id: string): Promise<BlogData | null> {
+  try {
+    const response = await axios.get(`${SERVER_ADDR}/api/posts/${id}`);
+    console.log("Fetched Blog Data:", response.data); // Debugging log
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching blog data:", error);
+    return null;
+  }
+}
+
+export default async function Page({ params }: { params: { slug: string } }) {
+  const blogData = await fetchBlogData(params.slug);
+
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-          <BlogPost params={params} />
+          {blogData ? <BlogPost blogData={blogData} /> : <h1>Blog not found</h1>}
         </div>
 
         <div className="lg:sticky lg:top-8 self-start">
@@ -14,9 +31,13 @@ export default function Page({ params }: { params: { slug: string } }) {
             <h3 className="text-lg font-medium mb-3">Audio Version</h3>
             <TTScomponent params={{ id: params.slug }} />
           </div>
+
+          {/* References Section */}
+          <Citations citations={blogData?.citations} />
         </div>
       </div>
     </div>
-  )
+  );
 }
+
 

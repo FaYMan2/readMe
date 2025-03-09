@@ -24,15 +24,28 @@ router.post("/create", authMiddleware, async (req: Request, res: Response) => {
             return;
         }
 
-    const post = await prisma.post.create({
-      data: {
-        id: randomUUID(),
-        title,
-        content,
-        imageURL: imageUrl,
-        authorId: userId
-      }
-    });
+        const extractLinks = (md : string) => {
+            const links = [];
+            const regex = /\[.*?\]\((.*?)\)/g;
+            let match;
+            while ((match = regex.exec(md)) !== null) {
+                links.push(match[1]);
+            }
+            return links;
+        };
+
+        const citations = extractLinks(content)
+
+        const post = await prisma.post.create({
+          data: {
+            id: randomUUID(),
+            title,
+            content,
+            imageURL: imageUrl,
+            authorId: userId,
+            citations : citations
+          }
+        });
 
     res.status(201).json({ message: "Post created successfully", post });
   } catch (error) {
@@ -51,7 +64,7 @@ router.get("/random", async (req: Request, res: Response) => {
         const count = await prisma.post.count();
         const randomPosts = await prisma.post.findMany({
             take: 12,
-            skip: Math.max(0, Math.floor(Math.random() * (count - 5))),
+            //skip: Math.max(0, Math.floor(Math.random() * (count - 5))),
 
             select: {
                 title: true,
@@ -107,6 +120,7 @@ router.get("/posts", authMiddleware, async (req: Request, res: Response) => {
 
 router.get("/:id",async (req : Request,res : Response) => {
     const id  = req.params.id;
+    logger.info('request blog : ',id);
     const postData = await prisma.post.findFirst({
         where : {
             id : id
@@ -115,9 +129,10 @@ router.get("/:id",async (req : Request,res : Response) => {
 
     if(!postData){
         res.status(201).json({message : "no post found"})
+        logger.error("blog error : ",id);
         return;
     }
-
+    logger.success("blog data (200) : ",id)
     res.status(200).json(postData);
     return;
 })

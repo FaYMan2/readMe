@@ -1,33 +1,9 @@
-import axios from "axios"
-import type { Metadata } from "next"
+
 import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
-import { SERVER_ADDR } from "@/app/utils/atom"
 import { CalendarIcon, Clock } from "lucide-react"
-
-interface BlogData {
-  title: string
-  content: string
-  createdAt: string
-  imageURL : string
-}
-
-async function fetchBlogData(id: string): Promise<BlogData | null> {
-  try {
-    const response = await axios.get(`${SERVER_ADDR}/api/posts/${id}`)
-    return response.data
-  } catch {
-    return null
-  }
-}
-
-export async function generateMetadata({ id }: { id: string }): Promise<Metadata> {
-  const blogData = await fetchBlogData(id)
-  return {
-    title: blogData?.title || "Blog Post",
-    description: blogData?.content.slice(0, 150) || "Read the latest blog post.",
-  }
-}
+import { BlogData } from "@/app/utils/types"
+import React from "react"
 
 function getReadingTime(text: string): number {
   const wordsPerMinute = 200
@@ -35,9 +11,11 @@ function getReadingTime(text: string): number {
   return Math.ceil(words / wordsPerMinute)
 }
 
-export default async function BlogPost({ params }: { params: { slug: string } }) {
-  const blogData = await fetchBlogData(params.slug)
+interface BlogPostProps{
+  blogData : BlogData
+}
 
+const BlogPost : React.FC<BlogPostProps> = ({ blogData })  => {
   if (!blogData) {
     return (
       <div className="bg-destructive/10 text-destructive p-4 rounded-lg">
@@ -46,7 +24,6 @@ export default async function BlogPost({ params }: { params: { slug: string } })
       </div>
     )
   }
-
   const readingTime = getReadingTime(blogData.content)
   const formattedDate = new Date(blogData.createdAt).toLocaleDateString("en-US", {
     year: "numeric",
@@ -77,3 +54,5 @@ export default async function BlogPost({ params }: { params: { slug: string } })
   )
 }
 
+
+export default BlogPost
