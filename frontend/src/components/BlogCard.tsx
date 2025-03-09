@@ -35,7 +35,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
         </CardHeader>
         
         <CardContent className="p-4 pt-2">
-          {/* content preview here if needed */} {post.imageUrl}
+          {/* content preview here if needed */}
         </CardContent>
         
         <CardFooter className="p-4 pt-0 flex items-center justify-between">

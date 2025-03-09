@@ -12,7 +12,8 @@ interface UserBlogCardProps {
 const UserBlogCard: React.FC<UserBlogCardProps> = ({ blog }) => {
   const { title, content, createdAt, id, imageURL } = blog;
   const formattedDate = new Date(createdAt).toLocaleDateString();
-  const preview = content.split("\n")[0];
+  const words = content.split(/\s+/).slice(0, 10).join(" ");
+  const preview = words.length < content.length ? `${words}...` : words;
 
   return (
     <Link href={`/blog/${id}`} className="block h-full">

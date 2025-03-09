@@ -65,7 +65,6 @@ export default function TTScomponent({ params }: { params: { id: string } }) {
         <span>Listen to this article instead of reading</span>
       </div>
 
-      {/* Radio group for selecting voice */}
       <div className="flex flex-col">
         <RadioGroup
           value={selectedVoice}
