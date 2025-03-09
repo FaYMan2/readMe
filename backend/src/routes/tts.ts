@@ -9,7 +9,7 @@ const router = Router();
 
 router.post("/",authMiddleware, async (req, res) => {
     try {   
-        const { id } = req.body;
+        const { id, voice } = req.body;
         logger.info("tts request for: ", id);
         if (!id) {
             res.status(400).json({ error: "id is required" });
@@ -27,14 +27,23 @@ router.post("/",authMiddleware, async (req, res) => {
             res.status(400).json({error : "blog not found"})
             return;
         }
-        const blogRawText = 'Title,' + Blogcontent.title + '...,...' +'Content of the Blog,    ' + Blogcontent.content;
-        const deepgramUrl = 'https://api.deepgram.com/v1/speak?model=aura-orpheus-en';
+
+        const parseMarkdown = (md : string) => {
+            return md
+                    .replace(/\[(.*?)\]\(.*?\)/g, '$1') // Remove links but keep text inside []
+                    .replace(/#/g, '') // Remove all '#' characters
+                    .replace(/\n/g, '...'); // Convert new lines to '...'
+        }
+
+        const model = voice === 'female' ? 'aura-athena-en' : 'aura-orpheus-en';
+        const blogRawText = 'Title,' + Blogcontent.title + '...,...' +'Content of the Blog,    ' + parseMarkdown(Blogcontent.content);
+        const deepgramUrl = `https://api.deepgram.com/v1/speak?model=${model}`;
         const deepgramApiKey = process.env.DEEPGRAM_API_KEY;
         const options = {
             method : 'POST',
             headers : {
                 Authorization : `Token ${deepgramApiKey}`,
-                'Content-Type' : 'application/json'
+                'Content-Type' : 'application/json' 
             },  
             body : JSON.stringify({
                 text : blogRawText
