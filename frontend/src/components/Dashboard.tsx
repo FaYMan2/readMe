@@ -10,17 +10,20 @@ import { BlogCardProps } from "@/app/utils/types";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { logoutUser } from "@/app/utils/atom";
+import useRequireAuth from "@/app/utils/useRequireAuth";
+
 export default function Dashboard() {
   const router = useRouter();
   const [posts, setPosts] = useState<BlogCardProps[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  useRequireAuth();
+
   useEffect(() => {
     const fetchPosts = async () => {
       const userId = Cookies.get("userId");
       if (!userId) {
-        alert("User not logged in. Redirecting to login page.");
         logoutUser();
         router.push("/login");
         return;
@@ -38,8 +41,8 @@ export default function Dashboard() {
           return;
         }
         setPosts(data);
-      } catch (err: any) {
-        if (err.response?.status === 403) {
+      } catch (err: Error | unknown) {
+        if (axios.isAxiosError(err) && err.response?.status === 403) {
           logoutUser();
           router.push("/login"); 
         } else {
@@ -73,10 +76,10 @@ export default function Dashboard() {
                 </Button>
               </Link>
             </div>
-            <div className="space-y-6">
+            <div className="space-y-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {posts.map((post) => (
                 <Link href={`blog/${post.id}`} key = {post.id}>
-                    <UserBlogCard key={post.id} BlogProps={post}/>
+                    <UserBlogCard blog={post}/>
                 </Link>
               ))}
             </div>

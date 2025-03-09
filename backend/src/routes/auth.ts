@@ -6,7 +6,7 @@ import logger from "../utils/loggint";
 const router = Router();
 
 router.post("/signup", async (req : Request,res : Response) => {
-    const {email,password} = req.body;
+    const {email,password,username} = req.body;
     try {
         logger.info(`Signup request received for: ${email}`);
         const user = await prisma.user.findFirst({
@@ -24,7 +24,8 @@ router.post("/signup", async (req : Request,res : Response) => {
         const newUser = await prisma.user.create({
             data : {
                 email : email,
-                hashedPassword : passwordHash
+                hashedPassword : passwordHash,
+                username : username
             }
         });
         logger.success(`User registered successfully: ${email}`);

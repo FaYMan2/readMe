@@ -56,7 +56,7 @@ export default function LoginPage() {
       setUserId(data.userId);
       setUsername(data.email);
       setIsLoggedIn(true);
-      router.push('/dashboard');
+      router.replace('/dashboard');
   
       alert("Login successful!");
     } catch (error: unknown) {

@@ -1,4 +1,4 @@
-import ArticleCard from '../components/ArticleCard';
+import BlogCard from '../components/BlogCard';
 import HomeStyle from '@/components/HomeComp';
 import { SERVER_ADDR } from './utils/atom';
 
@@ -10,7 +10,6 @@ async function getPosts() {
   if (!res.ok) {
     throw new Error('Failed to fetch posts');
   }
-  console.log(res.json)
   return res.json();
 }
 
@@ -18,16 +17,31 @@ export default async function HomePage() {
   const posts = await getPosts();
 
   return (
-    <main className="px-4 py-8 max-w-3xl mx-auto">
-      <div className="py-8 mb-6 flex align-center justify-center">
-        <HomeStyle />
-      </div>
+    <>
+      <main className="relative px-4 py-8 max-w-6xl mx-auto">
+        <header className="mb-16">
+          <h1 className="text-6xl text-center text-white tracking-wide mb-4 font-semibold">
+            ReadME
+          </h1>
+        </header>
 
-      <section>
-        {posts.map((post: { title: string; wordCount: number;id : string }, index: number) => (
-          <ArticleCard key={index} post={post} />
-        ))}
-      </section>
-    </main>
+        <section className="flex flex-col gap-4">
+          <div className="mb-4">
+            <HomeStyle />
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {posts.map((post: { 
+              title: string; 
+              wordCount: number; 
+              id: string;
+              imageUrl: string;
+            }, index: number) => (
+              <BlogCard key={post.id || index} post={post} />
+            ))}
+          </div>
+        </section>
+      </main>
+    </>
   );
 }

@@ -2,38 +2,54 @@ import dotenv from 'dotenv';
 import { Router } from 'express';
 import logger from '../utils/loggint';
 import authMiddleware from '../middleware';
+import prisma from '../prisma/prisma';
 
 dotenv.config();
 const router = Router();
 
 router.post("/",authMiddleware, async (req, res) => {
     try {   
-        const { text } = req.body;
-        logger.info("tts request for: ", text);
-        if (!text) {
-            res.status(400).json({ error: "Text is required" });
+        const { id } = req.body;
+        logger.info("tts request for: ", id);
+        if (!id) {
+            res.status(400).json({ error: "id is required" });
             return;
         }
-        const deepgramUrl = 'https://api.deepgram.com/v1/tts';
+        const Blogcontent = await prisma.post.findFirst({
+            where : {
+                id
+            },select : {
+                content : true,
+                title : true
+            }
+        })
+        if(!Blogcontent){
+            res.status(400).json({error : "blog not found"})
+            return;
+        }
+        const blogRawText = 'Title,' + Blogcontent.title + '...,...' +'Content of the Blog,    ' + Blogcontent.content;
+        const deepgramUrl = 'https://api.deepgram.com/v1/speak?model=aura-orpheus-en';
         const deepgramApiKey = process.env.DEEPGRAM_API_KEY;
         const options = {
             method : 'POST',
             headers : {
                 Authorization : `Token ${deepgramApiKey}`,
                 'Content-Type' : 'application/json'
-            },
-            body : {
-                "text" : JSON.stringify({text})
-            }
+            },  
+            body : JSON.stringify({
+                text : blogRawText
+            })
         }
         const response = await fetch(deepgramUrl, options);
-        const data = await response.json();
+        logger.info("request sent to deepgram");
         if(!response.ok) {
-            logger.error("Error creating post:", data);
+            logger.error("Error creating post");
             res.status(500).json({ error: "Internal server error" });
             return;
         }
+        logger.info("GOT response from deepgram")
         const audioBuffer = await response.arrayBuffer()
+        logger.success("200 - TSS generating successfully")
         res.setHeader('Content-Type', 'audio/mpeg');
         res.status(200).send(Buffer.from(audioBuffer));
     }

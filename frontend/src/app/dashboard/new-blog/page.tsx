@@ -12,6 +12,7 @@ import axios from "axios";
 import { SERVER_ADDR } from "@/app/utils/atom";
 import Cookies from "js-cookie";
 import { logoutUser } from "@/app/utils/atom";
+import { UploadButton } from "@/app/utils/uploadthing";
 
 export default function BlogEditor() {
   const router = useRouter();
@@ -19,6 +20,7 @@ export default function BlogEditor() {
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [imageURL,setImageUrl] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,18 +39,17 @@ export default function BlogEditor() {
       }
       await axios.post(
         `${SERVER_ADDR}/api/posts/create`,
-        { title: title.trim(), content: content.trim() },
+        { title: title.trim(), content: content.trim(),imageUrl : imageURL || "" },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert("Post published successfully!");
       router.push("/dashboard");
-    } catch (err: any) {
-        if (err.response?.status === 403) {
+    } catch (err: unknown) {
+        if (axios.isAxiosError(err) && err.response?.status === 403) {
             logoutUser();
             router.push("/login");
-
-        }else{
-            setError(err);
+        } else {
+            setError(err instanceof Error ? err.message : 'An error occurred');
         }
     } finally {
       setIsLoading(false);
@@ -66,6 +67,16 @@ export default function BlogEditor() {
             onChange={(e) => setTitle(e.target.value)}
             className="text-lg font-semibold"
           />
+          {!imageURL ? <UploadButton endpoint="imageUploader" 
+            onClientUploadComplete = {(res) => {
+              console.log("Upload complete",res);
+              setImageUrl(res[0].ufsUrl)
+            }}
+            onUploadError={(error: Error) => {
+              alert(`ERROR! ${error.message}`);
+            }}
+            className="bg-[#121111]"
+          /> : <h1>File Uploaded</h1> }
         </div>
 
         <Tabs defaultValue="edit" className="w-full">

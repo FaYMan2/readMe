@@ -30,7 +30,7 @@ const FloatingHeader: React.FC = () => {
     }
     else{
       logoutUser();
-      router.push("/login");
+      router.push("/");
     }
   }, [setIsLoggedIn, setUsername,router]);
 
@@ -41,14 +41,14 @@ const FloatingHeader: React.FC = () => {
     setIsLoggedIn(false);
     setUsername("");
 
-    router.push("/login");
+    router.push("/");
   };
   
   const storedUsername = Cookies.get("username");
   const initials = storedUsername ? storedUsername.slice(0, 2).toUpperCase() : "";
 
   return (
-    <header className="sticky top-0 bg-white dark:bg-black bg-opacity-95 backdrop-blur-sm z-50 shadow-sm">
+    <header className="sticky top-0 bg-white dark:bg-black opacity-75 backdrop-blur-sm z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
         <Link href="/">
           <span className="text-2xl font-bold font-header cursor-pointer">
@@ -56,7 +56,7 @@ const FloatingHeader: React.FC = () => {
           </span>
         </Link>
 
-        <nav className="flex items-center space-x-4">
+        <nav className="flex items-center space-x-4 opacity-100">
           {!isLoggedIn ? (
             <div className="hidden md:flex space-x-4">
               <Link href="/login">
@@ -71,7 +71,7 @@ const FloatingHeader: React.FC = () => {
               </Link>
             </div>
           ) : (
-            <div className="hidden md:flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-4 opacity-100">
               <span className="text-slate-300 hover:text-slate-400 cursor-pointer">
                   <Link
                     href={'/dashboard'}>
@@ -87,7 +87,7 @@ const FloatingHeader: React.FC = () => {
             </div>
           )}
 
-          <div className="md:hidden">
+          <div className="md:hidden opacity-100">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon">

@@ -18,6 +18,7 @@ datasource db {
 model User {
   id             String  @id @default(uuid())
   email          String  @unique
+  username       String  @default("")
   createdAt      DateTime @default(now())
   hashedPassword String
   posts          Post[] 
@@ -28,7 +29,7 @@ model Post {
   title     String
   content   String
   createdAt DateTime @default(now())
-  
+  imageURL  String   @default("")
   authorId  String
   author    User   @relation(fields: [authorId], references: [id])
 }

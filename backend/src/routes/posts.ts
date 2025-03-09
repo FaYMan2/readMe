@@ -16,29 +16,30 @@ const router = express.Router();
  */
 router.post("/create", authMiddleware, async (req: Request, res: Response) => {
     try {
-        const { title, content } = req.body;
+        const { title, content,imageUrl } = req.body;
         const userId = (req as AuthenticatedRequest).user;
         logger.info("create post request from ",userId);
-        if (!title || !content) {
-            res.status(400).json({ error: "Title and content are required" });
+        if (!title || !content || !imageUrl) {
+            res.status(400).json({ error: "Title and content and image are required" });
             return;
         }
 
-        const post = await prisma.post.create({
-            data: {
-                id: randomUUID(),
-                title,
-                content,
-                authorId: userId
-            }
-        });
+    const post = await prisma.post.create({
+      data: {
+        id: randomUUID(),
+        title,
+        content,
+        imageURL: imageUrl,
+        authorId: userId
+      }
+    });
 
-        res.status(201).json({ message: "Post created successfully", post });
-    } catch (error) {
-        console.error("Error creating post:", error);
-        res.status(500).json({ error: "Internal server error" });
-        return;
-    }
+    res.status(201).json({ message: "Post created successfully", post });
+  } catch (error) {
+    logger.error("Error creating post:", error);
+    res.status(500).json({ error: "Internal server error" });
+    return;
+  }
 });
 
 /**
@@ -49,13 +50,14 @@ router.get("/random", async (req: Request, res: Response) => {
     try {
         const count = await prisma.post.count();
         const randomPosts = await prisma.post.findMany({
-            take: 5,
+            take: 12,
             skip: Math.max(0, Math.floor(Math.random() * (count - 5))),
 
             select: {
                 title: true,
                 content: true,
                 id: true, 
+                imageURL : true
             },
             orderBy: { createdAt: "desc" },
         });
@@ -63,9 +65,9 @@ router.get("/random", async (req: Request, res: Response) => {
         const formattedPosts = randomPosts.map(post => ({
             id : post.id,
             title: post.title,
-            wordCount: post.content.split(/\s+/).filter(Boolean).length, 
+            wordCount: post.content.split(/\s+/).filter(Boolean).length,
+            imageUrl : post.imageURL
         }));    
-
         res.status(200).json(formattedPosts);
     } catch (error) {
         console.error("Error fetching random posts:", error);

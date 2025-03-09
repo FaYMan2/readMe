@@ -12,6 +12,7 @@ import axios, { AxiosError } from "axios";
 export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -34,7 +35,7 @@ export default function SignupPage() {
     setIsLoading(true);
   
     try {
-      await axios.post(`${SERVER_ADDR}/api/auth/signup`, { email, password });
+      await axios.post(`${SERVER_ADDR}/api/auth/signup`, { email, password , username});
       alert("Signup successful! Redirecting to login...");
       router.push("/login");
     } catch (error: unknown) {
@@ -46,7 +47,6 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black">
-      {/* Fade-in effect on the card */}
       <div className="w-full max-w-md p-8 bg-[#070707] border-[1px] border-opacity-20 border-white shadow rounded animate-in fade-in-0 text-slate-200">
         <h2 className="text-2xl font-bold text-center mb-6 ">
           Sign Up
@@ -62,6 +62,19 @@ export default function SignupPage() {
               placeholder="abc@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              className="bg-black border-[2px] border-white border-opacity-100 text-white"
+            />
+          </div>
+          <div className="grid gap-1">
+            <Label htmlFor="signup-email" className="text-white">
+              Email
+            </Label>
+            <Input
+              id="signup-username"
+              type="username"
+              placeholder="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="bg-black border-[2px] border-white border-opacity-100 text-white"
             />
           </div>
