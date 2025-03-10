@@ -12,7 +12,6 @@ import { isLoggedInAtom,userIdAtom,usernameAtom } from "../utils/atom";
 import { useAtom } from "jotai";
 import axios,{AxiosError} from "axios";
 import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 
 export default function LoginPage() {
@@ -24,8 +23,7 @@ export default function LoginPage() {
   const [,setUserId] = useAtom(userIdAtom);
   const [,setUsername] = useAtom(usernameAtom);
   const router = useRouter();
-  const searchParams = useSearchParams()
-  const redirectTo = searchParams.get("redirect") || "/dashboard";
+  const redirectTo =  "/dashboard";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     console.log("handle submit called");
