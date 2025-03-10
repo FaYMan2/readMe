@@ -32,7 +32,7 @@ const FloatingHeader: React.FC = () => {
       logoutUser();
       router.push("/");
     }
-  }, [setIsLoggedIn, setUsername,router]);
+  }, []);
 
   const handleSignOut = () => {
     Cookies.remove("token");

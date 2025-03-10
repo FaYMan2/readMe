@@ -4,7 +4,7 @@ import { randomUUID } from "crypto";
 import authMiddleware from "../middleware";
 import { Request, Response } from "express";
 import { AuthenticatedRequest } from "../utils/types";
-import logger from "../utils/loggint";
+import logger from "../utils/logging";
 
 const router = express.Router();
 
@@ -13,6 +13,7 @@ const router = express.Router();
 /**
  * @route   POST /post/create
  * @desc    Create a new post (Authenticated Users Only)
+ * @access  PROTECTED
  */
 router.post("/create", authMiddleware, async (req: Request, res: Response) => {
     try {
@@ -46,7 +47,7 @@ router.post("/create", authMiddleware, async (req: Request, res: Response) => {
             citations : citations
           }
         });
-
+        logger.success("post created successfully ",post.id);
     res.status(201).json({ message: "Post created successfully", post });
   } catch (error) {
     logger.error("Error creating post:", error);
@@ -58,12 +59,14 @@ router.post("/create", authMiddleware, async (req: Request, res: Response) => {
 /**
  * @route   GET /post/random
  * @desc    Get 5 random posts (Authenticated Users Only)
+ * @access  PROTECTED
  */
 router.get("/random", async (req: Request, res: Response) => {
     try {
-        const count = await prisma.post.count();
+        //const count = await prisma.post.count();
+        logger.info("random post route called")
         const randomPosts = await prisma.post.findMany({
-            take: 12,
+            take: 12,// Grid has rows of 4,3,2,1 - LCM of (4,3,2,1) is 12,
             //skip: Math.max(0, Math.floor(Math.random() * (count - 5))),
 
             select: {
@@ -81,6 +84,7 @@ router.get("/random", async (req: Request, res: Response) => {
             wordCount: post.content.split(/\s+/).filter(Boolean).length,
             imageUrl : post.imageURL
         }));    
+        logger.success("random post route success")
         res.status(200).json(formattedPosts);
     } catch (error) {
         console.error("Error fetching random posts:", error);
@@ -91,20 +95,23 @@ router.get("/random", async (req: Request, res: Response) => {
 /**
  * @route   GET /post/user
  * @desc    Get all posts by the authenticated user
+ * @access  PROTECTED
  */
 router.get("/posts", authMiddleware, async (req: Request, res: Response) => {
     try {
         const { author } = req.query; 
+        author ? logger.info(`post req for ${author}'s posts`) : logger.info("post request for all posts")
         const posts = await prisma.post.findMany({
             where: author ? { authorId: author as string } : undefined,
             orderBy: { createdAt: "desc" }, 
         });
 
         if (posts.length === 0) {
+            logger.error("no post found");
             res.status(201).json({ message: "No posts found" });
             return;
         }
-
+        logger.success("successfully found posts")
         res.status(200).json(posts);
     } catch (error) {
         console.error("Error fetching posts:", error);
@@ -116,6 +123,7 @@ router.get("/posts", authMiddleware, async (req: Request, res: Response) => {
 /** 
  * @route GET /postId
  * @desc Gets the post data by the post id
+ * @access PUBLIC
 */
 
 router.get("/:id",async (req : Request,res : Response) => {

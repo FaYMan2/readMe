@@ -14,6 +14,7 @@ import Cookies from "js-cookie";
 import { logoutUser } from "@/app/utils/atom";
 import { UploadButton } from "@/app/utils/uploadthing";
 
+
 export default function BlogEditor() {
   const router = useRouter();
   const [title, setTitle] = useState("");
@@ -75,7 +76,7 @@ export default function BlogEditor() {
             onUploadError={(error: Error) => {
               alert(`ERROR! ${error.message}`);
             }}
-            className="bg-[#121111]"
+            className="m-4 ut-button:bg-[#0e0d0d] ut-button:border ut-button:border-1 ut-button:hover:opacity-80"
           /> : <h1>File Uploaded</h1> }
         </div>
 

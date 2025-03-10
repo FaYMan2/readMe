@@ -2,10 +2,9 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import auth from './routes/auth'
 import dotenv from 'dotenv';
-import logger from './utils/loggint';
+import logger from './utils/logging';
 import tts from './routes/tts';
 import posts from './routes/posts';
-import upload from './routes/upload'
 
 dotenv.config();
 const app = express();
@@ -17,7 +16,6 @@ app.use(express.json());
 app.use('/api/auth', auth);
 app.use('/api/posts', posts);
 app.use('/api/tts', tts);
-app.use('/api/uploadthing',upload);
 
 app.get('/ping', (req: Request, res: Response) => {
     res.send('Hello welcome the ReadME API');

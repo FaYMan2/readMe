@@ -1,12 +1,16 @@
 import dotenv from 'dotenv';
 import { Router } from 'express';
-import logger from '../utils/loggint';
+import logger from '../utils/logging';
 import authMiddleware from '../middleware';
 import prisma from '../prisma/prisma';
 
 dotenv.config();
 const router = Router();
 
+/**
+ * @route  POST /api/tts/
+ * @desc   Gets Text-to-Speech for blog based on voice preference
+ */
 router.post("/",authMiddleware, async (req, res) => {
     try {   
         const { id, voice } = req.body;
@@ -35,8 +39,10 @@ router.post("/",authMiddleware, async (req, res) => {
                     .replace(/\n/g, '...'); // Convert new lines to '...'
         }
 
+        logger.info(voice === 'fenale' || voice === 'male' ? 'voice preference sent' : 'no voice preference - fallback to default')
         const model = voice === 'female' ? 'aura-athena-en' : 'aura-orpheus-en';
-        const blogRawText = 'Title,' + Blogcontent.title + '...,...' +'Content of the Blog,    ' + parseMarkdown(Blogcontent.content);
+        // , for short pauses , elipses (...) for longer pauses , (.) for pauses
+        const blogRawText = 'Title,' + Blogcontent.title + '...,...' +'Content of the Blog,' + parseMarkdown(Blogcontent.content);
         const deepgramUrl = `https://api.deepgram.com/v1/speak?model=${model}`;
         const deepgramApiKey = process.env.DEEPGRAM_API_KEY;
         const options = {
@@ -49,10 +55,11 @@ router.post("/",authMiddleware, async (req, res) => {
                 text : blogRawText
             })
         }
-        const response = await fetch(deepgramUrl, options);
+
         logger.info("request sent to deepgram");
+        const response = await fetch(deepgramUrl, options);
         if(!response.ok) {
-            logger.error("Error creating post");
+            logger.error("Error creating TTS for post (deepgram error)");
             res.status(500).json({ error: "Internal server error" });
             return;
         }

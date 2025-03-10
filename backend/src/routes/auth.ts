@@ -1,10 +1,15 @@
 import { Router,Request,Response } from "express";
 import prisma from "../prisma/prisma";
 import { hashPassword, comparePassword, generateToken } from '../utils/authUtils';
-import logger from "../utils/loggint";
+import logger from "../utils/logging";
 
 const router = Router();
 
+/**
+* @route   POST /api/auth/signup
+* @desc    Register a new user with email, username and hashed password
+* @access  Public
+*/
 router.post("/signup", async (req : Request,res : Response) => {
     const {email,password,username} = req.body;
     try {
@@ -21,6 +26,7 @@ router.post("/signup", async (req : Request,res : Response) => {
         }
 
         const passwordHash = await hashPassword(password);
+        
         const newUser = await prisma.user.create({
             data : {
                 email : email,
@@ -37,6 +43,12 @@ router.post("/signup", async (req : Request,res : Response) => {
     }
 })
 
+
+/**
+ * @route POST /api/login
+ * @access PUBLIC
+ * @desc login user 
+ */
 router.post("/login", async (req : Request,res : Response) => {
     try{
         const {email,password} = req.body;

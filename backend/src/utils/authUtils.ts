@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import logger from './loggint';
+import logger from './logging';
 
 const SECRET_KEY = process.env.JWT_SECRET || ""; 
 

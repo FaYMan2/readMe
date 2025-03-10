@@ -32,7 +32,6 @@ export default async function Page({ params }: { params: { slug: string } }) {
             <TTScomponent params={{ id: params.slug }} />
           </div>
 
-          {/* References Section */}
           <Citations citations={blogData?.citations} />
         </div>
       </div>

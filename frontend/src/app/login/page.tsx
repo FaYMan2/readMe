@@ -41,15 +41,7 @@ export default function LoginPage() {
   
     try {
       const { data } = await axios.post(`${SERVER_ADDR}/api/auth/login`, { email, password });
-  
-      console.log(data);
       
-      console.log("Setting cookies:", {
-        token: data.token,
-        userId: data.userId,
-        username: data.email
-      });
-  
       Cookies.set("token", data.token, { expires: 1, secure: true, sameSite: "Strict" });
       Cookies.set("userId", data.userId, { expires: 1, secure: true, sameSite: "Strict" });
       Cookies.set("username", data.email, { expires: 1, secure: true, sameSite: "Strict" });
