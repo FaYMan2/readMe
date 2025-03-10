@@ -31,9 +31,9 @@ export default function PostPreview({ title, content }: PostPreviewProps) {
         <Markdown
           remarkPlugins={[remarkGfm]}
           components={{
-            code({ inline, className, children, ...props }) {
+            code({ className, children, ...props }) {
               const match = /language-(\w+)/.exec(className || "");
-              return !inline && match ? (
+              return match ? (
                 <SyntaxHighlighter
                   PreTag="div"
                   language={match[1]}

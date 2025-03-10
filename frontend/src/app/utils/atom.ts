@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 import Cookies from 'js-cookie';
-export const SERVER_ADDR = "http://localhost:8080"
+export const SERVER_ADDR = "https://readme-ljs9.onrender.com"
 export const isLoggedInAtom = atom(false);
 export const userIdAtom = atom("");
 export const usernameAtom = atom("");
