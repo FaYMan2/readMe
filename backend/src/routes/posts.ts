@@ -82,7 +82,8 @@ router.get("/random", async (req: Request, res: Response) => {
             id : post.id,
             title: post.title,
             wordCount: post.content.split(/\s+/).filter(Boolean).length,
-            imageUrl : post.imageURL
+            imageUrl : post.imageURL,
+            content : post.content
         }));    
         logger.success("random post route success")
         res.status(200).json(formattedPosts);

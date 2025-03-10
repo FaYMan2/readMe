@@ -36,6 +36,7 @@ export default async function HomePage() {
               wordCount: number; 
               id: string;
               imageUrl: string;
+              content : string
             }, index: number) => (
               <BlogCard key={post.id || index} post={post} />
             ))}
