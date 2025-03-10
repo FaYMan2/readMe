@@ -26,7 +26,7 @@ export default function TTScomponent({ params }: { params: { id: string } }) {
 
     if (!token) {
       logoutUser();
-      router.push("/login");
+      router.push(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
       return;
     }
 

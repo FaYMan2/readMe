@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +10,7 @@ import { isLoggedInAtom,userIdAtom,usernameAtom } from "../utils/atom";
 import { useAtom } from "jotai";
 import axios,{AxiosError} from "axios";
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -21,6 +21,9 @@ export default function LoginPage() {
   const [,setUserId] = useAtom(userIdAtom);
   const [,setUsername] = useAtom(usernameAtom);
   const router = useRouter();
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get("redirect") || "/dashboard";
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     console.log("handle submit called");
     e.preventDefault();
@@ -48,7 +51,7 @@ export default function LoginPage() {
       setUserId(data.userId);
       setUsername(data.email);
       setIsLoggedIn(true);
-      router.replace('/dashboard');
+      router.replace(redirectTo);
   
       alert("Login successful!");
     } catch (error: unknown) {
@@ -57,7 +60,6 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-black">
       <div className="w-full max-w-md p-8 bg-[#070707] border-[1px] border-opacity-20 border-white shadow rounded animate-in fade-in-0 text-slate-200">
@@ -95,7 +97,6 @@ export default function LoginPage() {
             Continue
           </Button>
         </form>
-
         <p className="text-center mt-4 text-sm text-gray-400">
           Don&apos;t have an account?{" "}
           <a href="/signup" className="underline text-slate-200">

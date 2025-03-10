@@ -35,7 +35,7 @@ export default function BlogEditor() {
       const token = Cookies.get("token");
       if(!token) {
         logoutUser();
-        router.push("/login");
+        router.push(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
         return;
       }
       await axios.post(

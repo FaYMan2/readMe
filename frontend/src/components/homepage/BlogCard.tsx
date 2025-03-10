@@ -3,8 +3,7 @@ import Link from 'next/link';
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock } from "lucide-react";
-import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+
 interface Post {
   title: string;
   wordCount: number;
@@ -58,9 +57,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
         </CardHeader>
         
         <CardContent className="p-4 pt-2">
-          <Markdown remarkPlugins={[remarkGfm]}>
             {truncatedContent}
-          </Markdown>
         </CardContent>
         
         <CardFooter className="p-4 pt-0 flex items-center justify-between">
