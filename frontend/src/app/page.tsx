@@ -1,5 +1,5 @@
-import BlogCard from '../components/BlogCard';
-import HomeStyle from '@/components/HomeComp';
+import BlogCard from '../components/homepage/BlogCard';
+import HomeStyle from '@/components/homepage/HomeComp';
 import { SERVER_ADDR } from './utils/atom';
 
 async function getPosts() {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { SERVER_ADDR } from "@/app/utils/atom";
 import Cookies from "js-cookie";
 import { logoutUser } from "@/app/utils/atom";

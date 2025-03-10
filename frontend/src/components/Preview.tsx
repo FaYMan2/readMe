@@ -4,7 +4,7 @@ import { formatDistance } from "date-fns";
 import { Separator } from "@radix-ui/react-separator";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { atomDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import React from "react";
 import Markdown from "react-markdown";
 

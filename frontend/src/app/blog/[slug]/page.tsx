@@ -1,9 +1,9 @@
-import BlogPost from "@/components/BlogPost";
-import TTScomponent from "@/components/TtsComp";
+import BlogPost from "@/components/blogpage/BlogPost";
+import TTScomponent from "@/components/blogpage/TtsComp";
 import axios from "axios";
 import { SERVER_ADDR } from "@/app/utils/atom";
 import { BlogData } from "@/app/utils/types";
-import Citations from "@/components/Citations"
+import Citations from "@/components/blogpage/Citations"
 
 async function fetchBlogData(id: string): Promise<BlogData | null> {
   try {
