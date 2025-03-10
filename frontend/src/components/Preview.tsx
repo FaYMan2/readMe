@@ -3,8 +3,6 @@
 import { formatDistance } from "date-fns";
 import { Separator } from "@radix-ui/react-separator";
 import remarkGfm from "remark-gfm";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { atomDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import React from "react";
 import Markdown from "react-markdown";
 
@@ -30,27 +28,6 @@ export default function PostPreview({ title, content }: PostPreviewProps) {
       <div className="prose prose-neutral dark:prose-invert max-w-none mt-5">
         <Markdown
           remarkPlugins={[remarkGfm]}
-          components={{
-            code({ className, children, ...props }) {
-              const match = /language-(\w+)/.exec(className || "");
-              return match ? (
-                <SyntaxHighlighter
-                  PreTag="div"
-                  language={match[1]}
-                  showLineNumbers
-                  wrapLongLines
-                  style={atomDark}
-                  {...props}
-                >
-                  {String(children).replace(/\n$/, "")}
-                </SyntaxHighlighter>
-              ) : (
-                <code className={className} {...props}>
-                  {children}
-                </code>
-              );
-            },
-          }}
         >
           {content}
         </Markdown>
