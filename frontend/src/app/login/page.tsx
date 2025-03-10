@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+
+import { Suspense, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -63,6 +64,7 @@ export default function LoginPage() {
     }
   };
   return (
+    <Suspense fallback={<h1>Loading ...</h1>}>
     <div className="min-h-screen flex items-center justify-center bg-black">
       <div className="w-full max-w-md p-8 bg-[#070707] border-[1px] border-opacity-20 border-white shadow rounded animate-in fade-in-0 text-slate-200">
         <h2 className="text-2xl font-bold text-center mb-6 text-white">Login</h2>
@@ -107,5 +109,6 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+    </Suspense>
   );
 }
