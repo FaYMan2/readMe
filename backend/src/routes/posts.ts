@@ -8,8 +8,6 @@ import logger from "../utils/logging";
 
 const router = express.Router();
 
-
-
 /**
  * @route   POST /post/create
  * @desc    Create a new post (Authenticated Users Only)
@@ -66,7 +64,7 @@ router.get("/random", async (req: Request, res: Response) => {
         //const count = await prisma.post.count();
         logger.info("random post route called")
         const randomPosts = await prisma.post.findMany({
-            take: 12,// Grid has rows of 4,3,2,1 - LCM of (4,3,2,1) is 12,
+            take: 12, // Grid has rows of 4,3,2,1 - LCM of (4,3,2,1) is 12,
             //skip: Math.max(0, Math.floor(Math.random() * (count - 5))),
 
             select: {

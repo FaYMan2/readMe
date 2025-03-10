@@ -36,12 +36,12 @@ router.post("/",authMiddleware, async (req, res) => {
             return md
                     .replace(/\[(.*?)\]\(.*?\)/g, '$1') // Remove links but keep text inside []
                     .replace(/#/g, '') // Remove all '#' characters
-                    .replace(/\n/g, '...'); // Convert new lines to '...'
+                    .replace(/\n/g, '...'); // Convert new lines to elipses '...'
         }
 
         logger.info(voice === 'fenale' || voice === 'male' ? 'voice preference sent' : 'no voice preference - fallback to default')
         const model = voice === 'female' ? 'aura-athena-en' : 'aura-orpheus-en';
-        // , for short pauses , elipses (...) for longer pauses , (.) for pauses
+        // comma (,) for short pauses , elipses (...) for longer pauses , fullstop (.) for pauses
         const blogRawText = 'Title,' + Blogcontent.title + '...,...' +'Content of the Blog,' + parseMarkdown(Blogcontent.content);
         const deepgramUrl = `https://api.deepgram.com/v1/speak?model=${model}`;
         const deepgramApiKey = process.env.DEEPGRAM_API_KEY;

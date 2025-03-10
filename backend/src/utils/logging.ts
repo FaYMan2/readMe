@@ -1,6 +1,5 @@
 import { Signale } from 'signale';
 
-// Configure Signale
 const options = {
     scope: 'AuthApp',
     types: {
