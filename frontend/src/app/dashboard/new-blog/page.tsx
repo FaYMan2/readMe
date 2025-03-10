@@ -13,6 +13,7 @@ import { SERVER_ADDR } from "@/app/utils/atom";
 import Cookies from "js-cookie";
 import { logoutUser } from "@/app/utils/atom";
 import { UploadButton } from "@/app/utils/uploadthing";
+import toast, { Toaster } from 'react-hot-toast';
 
 
 export default function BlogEditor() {
@@ -28,6 +29,7 @@ export default function BlogEditor() {
     setError("");
     if (!title.trim() || !content.trim()) {
       setError("Title and content are required");
+      toast.error("title and content are required")
       return;
     }
     setIsLoading(true);
@@ -43,10 +45,11 @@ export default function BlogEditor() {
         { title: title.trim(), content: content.trim(),imageUrl : imageURL || "" },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      alert("Post published successfully!");
+      toast.success("Post published successfully!");
       router.push("/dashboard");
     } catch (err: unknown) {
         if (axios.isAxiosError(err) && err.response?.status === 403) {
+            toast.error("session timeout please login again")
             logoutUser();
             router.push("/login");
         } else {

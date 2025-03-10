@@ -11,6 +11,7 @@ import { useAtom } from "jotai";
 import axios,{AxiosError} from "axios";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -51,11 +52,12 @@ export default function LoginPage() {
       setUserId(data.userId);
       setUsername(data.email);
       setIsLoggedIn(true);
+      toast.success("Login successful!");
       router.replace(redirectTo);
-  
-      alert("Login successful!");
+      
     } catch (error: unknown) {
           setError(((error as AxiosError).response?.data as { error: string })?.error || "Signup failed");
+          toast.error("login error")
     } finally {
       setIsLoading(false);
     }

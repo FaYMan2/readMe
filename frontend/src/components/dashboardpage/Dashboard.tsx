@@ -11,6 +11,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { logoutUser } from "@/app/utils/atom";
 import useRequireAuth from "@/app/utils/useRequireAuth";
+import toast from "react-hot-toast";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -43,6 +44,7 @@ export default function Dashboard() {
         setPosts(data);
       } catch (err: Error | unknown) {
         if (axios.isAxiosError(err) && err.response?.status === 403) {
+          toast.error("session timeout please login again")
           logoutUser();
           router.push("/login"); 
         } else {

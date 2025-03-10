@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import { SERVER_ADDR } from "../utils/atom";
 import axios, { AxiosError } from "axios";
+import toast from "react-hot-toast";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
@@ -16,7 +17,7 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
@@ -36,7 +37,7 @@ export default function SignupPage() {
   
     try {
       await axios.post(`${SERVER_ADDR}/api/auth/signup`, { email, password , username});
-      alert("Signup successful! Redirecting to login...");
+      toast.success("Signup successful! Redirecting to login...");
       router.push("/login");
     } catch (error: unknown) {
       setError(((error as AxiosError).response?.data as { error: string })?.error || "Signup failed");
